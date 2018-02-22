@@ -1,0 +1,155 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Flashcards Word Service API
+  description: API spec for Hebrew flashcards
+  contact:
+    name: Chris Chapman
+    email: chrischapman900@gmail.com
+    url: http://chrischapman.co
+servers:
+  - url: http://flashcards.api.localhost/api
+paths:
+  /words:
+    get:
+      tags:
+      - Word
+      summary: Get a list of words
+      description: |
+        Returns all the words of the specified parameters
+      operationId: getWords
+      parameters:
+        - name: partOfSpeech
+          in: query
+          description: Part of speech to filter by
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset to go to the next results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: confidedenceThreshold
+          in: query
+          description: maximum confidence to filter by
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: words response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Word'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /words/{id}:
+    get:
+      summary: Returns a word, designated by the objectId
+      tags:
+      - Word
+      operationId: getWord
+      parameters:
+        - name: id
+          in: path
+          description: ID of word to fetch
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: word response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a word with given ID
+      tags:
+      - Word
+      operationId: updateWord
+      parameters:
+        - name: id
+          in: path
+          description: ID of word to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Word'
+        description: The word to update
+        required: true
+      responses:
+        '200':
+          description: word response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Word:
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '5a382e792ac9eace8babf617'
+        english:
+          type: string
+          example: to come
+        hebrew:
+          type: string
+          example: בוא
+        partOfSpeech:
+          type: string
+          example: verb
+        count:
+          type: number
+          example: 2579
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
