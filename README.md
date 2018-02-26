@@ -1,77 +1,56 @@
 # Hebrew Flashcards word service API
 
-This service provides word data for flashcards
-
-Using Mongoose ODM and Bluebird for Promises.
-
-## Use Cases
-
-- NoSQL CRUD API
-
-## Setup
-
-```
-npm install
-serverless deploy
-```
+This service provides word data for a Hebrew flashcard language learning app.
 
 ## Usage
 
-In `handler.js` update the `mongoString` with your mongoDB url.
+### List words
 
-*Create*
+**Endpoint: `/words`**
 
-```bash
-curl -XPOST -H "Content-type: application/json" -d '{
-   "name" : "John",
-   "firstname" : "Doe",
-   "city" : "Toronto",
-   "birth" : "01/01/1990"
-}' 'https://2c8cx5whk0.execute-api.us-east-1.amazonaws.com/dev/user/'
-```
-```json
-{"id": "590b52ff086041000142cedd"}
-```
+Returns all the words with the specified parameters and pagination info
 
-*READ*
+*Query Parameters:*
+* (optional) `partOfSpeech`: e.g. "verb"
+* (optional) `limit`: e.g. 10
+* (optional) `offset`: e.g. 2
 
-```bash
-curl -XGET -H "Content-type: application/json" 'https://2c8cx5whk0.execute-api.us-east-1.amazonaws.com/dev/user/590b52ff086041000142cedd'
-```
+*Sample Response:*
 ```json
 [
-  {
-    "_id": "5905e2fbdb55f20001334b3e",
-    "name": "John",
-    "firstname": "Doe",
-    "birth": null,
-    "city": "Toronto",
-    "ip": "01/01/1990",
-    "__v": 0
-  }
+    {
+        "_id": "5a9439a24e443d2b5c9d7af9",
+        "hebrew": "אמר",
+        "english": "to say",
+        "count": 5317,
+        "partOfSpeech": "verb"
+    },
+    {
+        "_id": "5a9439a24e443d2b5c9d7afe",
+        "hebrew": "היה",
+        "english": "to be",
+        "count": 3576,
+        "partOfSpeech": "verb"
+    }
 ]
 ```
 
-*UPDATE*
 
-```bash
-curl -XPUT -H "Content-type: application/json" -d '{
-   "name" : "William",
-   "firstname" : "Smith",
-   "city" : "Miami",
-   "birth" : "01/01/2000"
-}' 'https://2c8cx5whk0.execute-api.us-east-1.amazonaws.com/dev/user/590b52ff086041000142cedd'
-```
-```json
-"Ok"
-```
+###Get word
 
-*DELETE*
+**Endpoint: `/words/{word_id}`**
 
-```bash
-curl -XDELETE -H "Content-type: application/json" 'https://2c8cx5whk0.execute-api.us-east-1.amazonaws.com/dev/user/590b52ff086041000142cedd'
-```
+*Path parameters*
+* `word_id`: e.g. "5a9439a24e443d2b5c9d7aab"
+
+*Sample Response:*
 
 ```json
-"Ok"
+{
+    "_id": "5a9439a24e443d2b5c9d7aab",
+    "hebrew": "עשׂה",
+    "english": "to do, make",
+    "count": 2632,
+    "partOfSpeech": "verb"
+}
 ```
