@@ -1,0 +1,104 @@
+{
+	"info": {
+		"name": "Words",
+		"_postman_id": "6f176ab4-11f5-4879-a561-67d88366a237",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Word",
+			"item": [
+				{
+					"name": "Get Word (success)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/words/{{word_id}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"words",
+								"{{word_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Words",
+			"item": [
+				{
+					"name": "Get Words (success)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "544a4c18-6964-4a60-940c-257df816bfa8",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Part of Speech filter works\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[0].partOfSpeech).to.eql('verb');",
+									"});",
+									"",
+									"pm.test(\"Limit works\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.eql(6);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{domain}}/words?partOfSpeech=verb&limit=6",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"words"
+							],
+							"query": [
+								{
+									"key": "partOfSpeech",
+									"value": "verb",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "6",
+									"equals": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -36,7 +36,7 @@ Returns all the words with the specified parameters and pagination info
 ```
 
 
-###Get word
+### Get word
 
 **Endpoint: `/words/{word_id}`**
 
