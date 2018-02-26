@@ -82,39 +82,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Word'
-        default:
-          description: unexpected error
+        '404':
+          description: word not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    put:
-      summary: Update a word with given ID
-      tags:
-      - Word
-      operationId: updateWord
-      parameters:
-        - name: id
-          in: path
-          description: ID of word to update
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Word'
-        description: The word to update
-        required: true
-      responses:
-        '200':
-          description: word response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Word'
         default:
           description: unexpected error
           content:
@@ -129,7 +102,6 @@ components:
       properties:
         id:
           type: string
-          format: uuid
           example: '5a382e792ac9eace8babf617'
         english:
           type: string
@@ -141,15 +113,14 @@ components:
           type: string
           example: verb
         count:
-          type: number
+          type: integer
+          description: The number of occurances in the Torah
           example: 2579
     Error:
       required:
-        - code
         - message
       properties:
-        code:
-          type: integer
-          format: int32
         message:
           type: string
+        code:
+          type: integer

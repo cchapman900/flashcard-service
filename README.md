@@ -1,6 +1,6 @@
-# Serverless MongoDB Rest API with Mongoose and Bluebird Promises
+# Hebrew Flashcards word service API
 
-This example demonstrate how to use a MongoDB database with aws and serverless.
+This service provides word data for flashcards
 
 Using Mongoose ODM and Bluebird for Promises.
 

@@ -1,4 +1,4 @@
-service: service-name
+service: words
 
 provider:
   name: aws
@@ -7,34 +7,19 @@ provider:
     MONGO_URI: ${file(./config.yml):MONGO_URI}
 
 functions:
-  createUser:
-    handler: handler.createUser
+
+  getWords:
+    handler: handler.getWords
     events:
       - http:
-          path: user
-          method: post
+          path: words
+          method: get
           cors: true
 
-  updateUser:
-    handler: handler.updateUser
+  getWord:
+    handler: handler.getWord
     events:
       - http:
-          path: user/{id}
-          method: put
-          cors: true
-
-  deleteUser:
-    handler: handler.deleteUser
-    events:
-      - http:
-          path: user/{id}
-          method: delete
-          cors: true
-
-  user:
-    handler: handler.user
-    events:
-      - http:
-          path: user/{id}
+          path: words/{word_id}
           method: get
           cors: true
