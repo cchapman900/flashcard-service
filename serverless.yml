@@ -5,8 +5,14 @@ provider:
   runtime: nodejs6.10
   environment:
     MONGO_URI: ${file(./config.yml):MONGO_URI}
+    JWKS_URI: ${file(./config.yml):JWKS_URI}
+    AUDIENCE: ${file(./config.yml):AUDIENCE}
+    TOKEN_ISSUER: ${file(./config.yml):TOKEN_ISSUER}
 
 functions:
+
+  authenticate:
+    handler: handler.authenticate
 
   getWords:
     handler: handler.getWords
@@ -23,3 +29,12 @@ functions:
           path: words/{word_id}
           method: get
           cors: true
+
+  getUser:
+    handler: handler.getUser
+    events:
+      - http:
+          path: users/{user_id}
+          method: get
+          cors: true
+          authorizer: authenticate

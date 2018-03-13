@@ -61,20 +61,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /words/{id}:
+  /words/{word_id}:
     get:
       summary: Returns a word, designated by the objectId
       tags:
       - Word
       operationId: getWord
       parameters:
-        - name: id
+        - name: word_id
           in: path
           description: ID of word to fetch
           required: true
           schema:
             type: string
-            format: uuid
+            format: ObjectId
       responses:
         '200':
           description: word response
@@ -94,13 +94,85 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /words/{word_id}/confidence:
+    put:
+      summary: Update a word (such as the confidence level) for a user
+      tags:
+      - Word
+      operationId: getWord
+      parameters:
+        - name: word_id
+          in: path
+          description: ID of Word
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        description: The confidence level for the word to update for a user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Confidence'
+      responses:
+        '200':
+          description: Word response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        '404':
+          description: user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{user_id}:
+    get:
+      summary: Returns a User, designated by the objectId
+      tags:
+      - User
+      operationId: getWord
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of User to fetch
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        '200':
+          description: user response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Word:
       required:
         - name
       properties:
-        id:
+        _id:
           type: string
           example: '5a382e792ac9eace8babf617'
         english:
@@ -114,8 +186,52 @@ components:
           example: verb
         count:
           type: integer
-          description: The number of occurances in the Torah
+          description: The number of occurances in the text
           example: 2579
+
+    Confidence:
+      properties:
+        confidence:
+          type: integer
+          minimum: 0
+          maximum: 5
+          example: 3
+
+    User:
+      required:
+        - name
+        - nickname
+        - picture
+        - sub
+      properties:
+        _id:
+          type: string
+          example: '5a382e792ac9eace8babf617'
+        name:
+          type: string
+          example: Chris Chapman
+        nickname:
+          type: string
+          example: chrischapman900
+        sub:
+          type: string
+          example: "auth0|5a382e792ac9eace8babf617"
+        picture:
+          type: string
+          example: 'https://lh5.googleusercontent.com/-1W-Ea0Iw0i8/AAAAAAAAAAI/AAAAAAAAFGI/LFvpf-E7t6g/photo.jpg'
+        email:
+          type: string
+          example: test@example.com
+        email_verified:
+          type: boolean
+          example: true
+        given_name:
+          type: string
+          example: Chris
+        family_name:
+          type: string
+          example: Chapman
+
     Error:
       required:
         - message

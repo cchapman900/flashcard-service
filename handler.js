@@ -3,6 +3,8 @@
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const validator = require('validator');
+
+const auth = require('./auth');
 const Word = require('./models/Word.js');
 
 mongoose.Promise = bluebird;
@@ -27,9 +29,9 @@ module.exports.getWords = (event, context, callback) => {
   mongoose.connect(mongoString);
   const db = mongoose.connection;
 
-  var limit = 10;
-  var offset = 0;
-  var query = {};
+  let limit = 10;
+  let offset = 0;
+  let query = {};
   if (event.queryStringParameters) {
     // Set the limit of words to return
     if (event.queryStringParameters.limit) {
@@ -106,4 +108,19 @@ module.exports.getWord = (event, context, callback) => {
         callback(null, createErrorResponse(err.statusCode, err.message));
       })
   });
+};
+
+module.exports.getUser = (event, context, callback) => {
+    callback(null, { statusCode: 200, body: JSON.stringify(event) });
+};
+
+module.exports.authenticate = (event, context) => {
+    auth.authenticate(event, function (err, data) {
+        if (err) {
+            if (!err) context.fail("Unhandled error");
+            context.fail("Unauthorized");
+
+        }
+        else context.succeed(data);
+    });
 };
