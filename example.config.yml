@@ -1,1 +1,5 @@
 MONGO_URI: ''
+
+JWKS_URI: ''
+AUDIENCE: ''
+TOKEN_ISSUER: ''

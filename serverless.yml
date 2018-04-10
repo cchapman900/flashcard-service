@@ -5,16 +5,14 @@ provider:
   runtime: nodejs6.10
   environment:
     MONGO_URI: ${file(./config.yml):MONGO_URI}
+    JWKS_URI: ${file(./config.yml):JWKS_URI}
+    AUDIENCE: ${file(./config.yml):AUDIENCE}
+    TOKEN_ISSUER: ${file(./config.yml):TOKEN_ISSUER}
 
 functions:
 
   authenticate:
     handler: handler.authenticate
-    events:
-      - http:
-          path: words
-          method: get
-          cors: true
 
   getWords:
     handler: handler.getWords
@@ -43,4 +41,4 @@ functions:
             name: authenticate
             resultTtlInSeconds: 60
             identitySource: method.request.header.Authorization
-            type: token
+            type: token\
