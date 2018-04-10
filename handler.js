@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const validator = require('validator');
 const Word = require('./models/Word.js');
+const User = require('./models/User.js');
 
 mongoose.Promise = bluebird;
 
@@ -78,6 +79,15 @@ module.exports.getWords = (event, context, callback) => {
   });
 };
 
+
+/**
+ * GET WORD
+ * Get a single word with the designated word_id
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
 module.exports.getWord = (event, context, callback) => {
   mongoose.connect(mongoString);
   const db = mongoose.connection;
@@ -105,5 +115,55 @@ module.exports.getWord = (event, context, callback) => {
         db.close();
         callback(null, createErrorResponse(err.statusCode, err.message));
       })
+  });
+};
+
+
+/**
+ * UPDATE USER WORD
+ * Update a word in a user's list of words
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
+module.exports.updateUserWord = (event, context, callback) => {
+  mongoose.connect(mongoString);
+  const db = mongoose.connection;
+  const word_id = event.pathParameters.word_id;
+
+  if (!validator.isAlphanumeric(word_id)) {
+    callback(null, createErrorResponse(400, 'Incorrect id'));
+    db.close();
+    return;
+  }
+
+  db.once('open', () => {
+    User
+      .findById(user_id)
+      .then((user) => {
+        if (!user) {
+          db.close();
+          callback(null, createErrorResponse(404, 'Word not found'));
+        } else {
+          db.close();
+          callback(null, { statusCode: 200, body: JSON.stringify(user) });
+        }
+      })
+      .catch((err) => {
+        db.close();
+        callback(null, createErrorResponse(err.statusCode, err.message));
+      })
+  });
+};
+
+module.exports.authenticate = (event, context) => {
+  auth.authenticate(event, function (err, data) {
+    if (err) {
+      if (!err) context.fail("Unhandled error");
+      context.fail("Unauthorized");
+
+    }
+    else context.succeed(data);
   });
 };

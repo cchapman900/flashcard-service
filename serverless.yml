@@ -1,4 +1,4 @@
-service: words
+service: flashcards
 
 provider:
   name: aws
@@ -7,6 +7,14 @@ provider:
     MONGO_URI: ${file(./config.yml):MONGO_URI}
 
 functions:
+
+  authenticate:
+    handler: handler.authenticate
+    events:
+      - http:
+          path: words
+          method: get
+          cors: true
 
   getWords:
     handler: handler.getWords
@@ -23,3 +31,16 @@ functions:
           path: words/{word_id}
           method: get
           cors: true
+
+  updateUserWord:
+    handler: handler.updateUserWord
+    events:
+      - http:
+          path: users/{word_id}
+          method: put
+          cors: true
+          authorizer:
+            name: authenticate
+            resultTtlInSeconds: 60
+            identitySource: method.request.header.Authorization
+            type: token

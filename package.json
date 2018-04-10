@@ -1,13 +1,16 @@
 {
-  "name": "words",
+  "name": "flashcards",
   "version": "1.0.0",
   "description": "Serverless REST API with MongoDB using Mongoose and Bluebird",
   "main": "handler.js",
   "dependencies": {
+    "auth0": "^2.9.1",
     "bluebird": "^3.5.0",
+    "jsonwebtoken": "^8.2.0",
+    "jwks-rsa": "^1.2.1",
     "mongoose": "^5.0.6",
     "validator": "^7.0.0"
   },
-  "author": "Quentin Homareau <quentin.homareau@gmail.com>",
+  "author": "Chris Chapman",
   "license": "MIT"
 }

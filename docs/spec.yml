@@ -61,14 +61,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /words/{id}:
+  /words/{word_id}:
     get:
       summary: Returns a word, designated by the objectId
       tags:
       - Word
       operationId: getWord
       parameters:
-        - name: id
+        - name: word_id
           in: path
           description: ID of word to fetch
           required: true
@@ -94,13 +94,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /user/{user_id}:
+    parameters:
+      - name: user_id
+        in: path
+        description: ID of user to fetch
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+      - Word
+      - User
+      summary: Get a user's list of words
+      description: |
+        Returns all the words of the specified parameters
+      operationId: getUser
+      responses:
+        '200':
+          description: words response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/{user_id}/words/{word_id}:
+    parameters:
+      - name: user_id
+        in: path
+        description: ID of user
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: word_id
+        in: path
+        description: ID of word to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+    put:
+      tags:
+      - Word
+      - User
+      summary: Update user's word
+      description: |
+        Update a word in a user's list of words
+      operationId: updateUserWord
+      requestBody:
+        description: Information required to submit a travel insurance Lead
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Confidence'
+      responses:
+        '200':
+          description: words response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Word'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Word:
       required:
         - name
       properties:
-        id:
+        _id:
           type: string
           example: '5a382e792ac9eace8babf617'
         english:
@@ -116,6 +191,30 @@ components:
           type: integer
           description: The number of occurances in the Torah
           example: 2579
+    User:
+      required:
+        - name
+      properties:
+        _id:
+          type: string
+          example: '5a382e792ac9eace8babf617'
+        name:
+          type: string
+          example: 'John Doe'
+        words:
+          type: array
+          items:
+            properties:
+              word_id:
+                type: string
+                example: '5a382e792ac9eace8babf617'
+              confidence:
+                $ref: '#/components/schemas/Confidence'
+    Confidence:
+      type: number
+      example: 3
+      minimum: 1
+      maximum: 5
     Error:
       required:
         - message
