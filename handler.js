@@ -129,9 +129,12 @@ module.exports.getWord = (event, context, callback) => {
  * @param callback
  */
 module.exports.updateUserWord = (event, context, callback) => {
+  // callback(null, { statusCode: 200, body: JSON.stringify(event) });
   mongoose.connect(mongoString);
   const db = mongoose.connection;
+  const user_id = event.requestContext.authorizer.principalId;
   const word_id = event.pathParameters.word_id;
+  const confidence = event.body.confidence;
 
   if (!validator.isAlphanumeric(word_id)) {
     callback(null, createErrorResponse(400, 'Incorrect id'));
@@ -141,11 +144,11 @@ module.exports.updateUserWord = (event, context, callback) => {
 
   db.once('open', () => {
     User
-      .findById(user_id)
+      .findByIdAndUpdate(user_id, {'_id': user_id, $push: {'words': {'word_id': word_id, 'confidence': confidence}}}, {'upsert': true})
       .then((user) => {
         if (!user) {
           db.close();
-          callback(null, createErrorResponse(404, 'Word not found'));
+          callback(null, createErrorResponse(500, 'There was an error accessing the user'));
         } else {
           db.close();
           callback(null, { statusCode: 200, body: JSON.stringify(user) });

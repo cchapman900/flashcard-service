@@ -41,4 +41,4 @@ functions:
             name: authenticate
             resultTtlInSeconds: 60
             identitySource: method.request.header.Authorization
-            type: token\
+            type: token

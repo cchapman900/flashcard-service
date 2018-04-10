@@ -8,7 +8,6 @@ const model = mongoose.model('User', {
   },
   name: {
     type: String,
-    required: true,
   },
   words: [{
     word: {
