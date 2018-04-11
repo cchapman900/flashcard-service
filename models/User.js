@@ -10,7 +10,7 @@ const model = mongoose.model('User', {
     type: String,
   },
   words: [{
-    word: {
+    word_id: {
       type: Schema.Types.ObjectId,
       ref: 'Word'},
     confidence: {

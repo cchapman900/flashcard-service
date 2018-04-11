@@ -130,11 +130,12 @@ module.exports.getWord = (event, context, callback) => {
  */
 module.exports.updateUserWord = (event, context, callback) => {
   // callback(null, { statusCode: 200, body: JSON.stringify(event) });
+  const requestBody = JSON.parse(event.body)
   mongoose.connect(mongoString);
   const db = mongoose.connection;
   const user_id = event.requestContext.authorizer.principalId;
   const word_id = event.pathParameters.word_id;
-  const confidence = event.body.confidence;
+  const confidence = parseInt(requestBody.confidence);
 
   if (!validator.isAlphanumeric(word_id)) {
     callback(null, createErrorResponse(400, 'Incorrect id'));
@@ -144,14 +145,29 @@ module.exports.updateUserWord = (event, context, callback) => {
 
   db.once('open', () => {
     User
-      .findByIdAndUpdate(user_id, {'_id': user_id, $push: {'words': {'word_id': word_id, 'confidence': confidence}}}, {'upsert': true})
+      .findByIdAndUpdate(user_id, {'_id': user_id}, {'upsert': true})
       .then((user) => {
         if (!user) {
           db.close();
           callback(null, createErrorResponse(500, 'There was an error accessing the user'));
         } else {
-          db.close();
-          callback(null, { statusCode: 200, body: JSON.stringify(user) });
+          let wordObject = {_id: word_id, confidence: confidence};
+          let wordIndex = user.words.findIndex((word => word._id == word_id));
+          if (wordIndex !== -1) {
+            user.words[wordIndex] = wordObject;
+          } else {
+            user.words.push(wordObject)
+          }
+          user.save()
+            .then(() => {
+              db.close();
+              callback(null, { statusCode: 200, body: JSON.stringify(user) });
+            })
+            .catch((err) => {
+
+            db.close();
+            callback(null, createErrorResponse(err.statusCode, err.message));
+          });
         }
       })
       .catch((err) => {
