@@ -120,6 +120,46 @@ module.exports.getWord = (event, context, callback) => {
   });
 };
 
+
+/**
+ * GET USER
+ * Get a single user from the authenticated user_id
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
+module.exports.getUser = (event, context, callback) => {
+  mongoose.connect(mongoString);
+  const db = mongoose.connection;
+  const user_id = event.pathParameters.user_id;
+
+  // if (!validator.isAlphanumeric(user_id)) {
+  //   callback(null, createErrorResponse(400, 'Incorrect id'));
+  //   db.close();
+  //   return;
+  // }
+
+  db.once('open', () => {
+    User
+      .findById(user_id)
+      .then((user) => {
+        if (!user) {
+          db.close();
+          callback(null, createErrorResponse(404, 'User not found'));
+        } else {
+          db.close();
+          callback(null, { statusCode: 200, body: JSON.stringify(user) });
+        }
+      })
+      .catch((err) => {
+        db.close();
+        callback(null, createErrorResponse(err.statusCode, err.message));
+      })
+  });
+};
+
+
 /**
  * UPDATE USER WORD
  * Update a word in a user's list of words
@@ -130,7 +170,7 @@ module.exports.getWord = (event, context, callback) => {
  */
 module.exports.updateUserWord = (event, context, callback) => {
   // callback(null, { statusCode: 200, body: JSON.stringify(event) });
-  const requestBody = JSON.parse(event.body)
+  const requestBody = JSON.parse(event.body);
   mongoose.connect(mongoString);
   const db = mongoose.connection;
   const user_id = event.requestContext.authorizer.principalId;

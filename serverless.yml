@@ -30,11 +30,19 @@ functions:
           method: get
           cors: true
 
+  getUser:
+    handler: handler.getUser
+    events:
+      - http:
+          path: users/{user_id}
+          method: get
+          cors: true
+
   updateUserWord:
     handler: handler.updateUserWord
     events:
       - http:
-          path: users/{word_id}
+          path: users/words/{word_id}
           method: put
           cors: true
           authorizer:
